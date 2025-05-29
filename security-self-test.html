@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<!--
+  Security Self-Test
+  Copyright (C) 2025 OpenVexa
+  Website: https://openvexa.de
+  Licensed under GNU GPLv3
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Self-Test: Privacy & Online Security</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .quiz-container,
+        .dark-mode .results {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .options label {
+            background-color: #3a3a3a;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .options label:hover {
+            background-color: #4a4a4a;
+        }
+        
+        .dark-mode .result-feedback {
+            background-color: #3a3a3a;
+        }
+        
+        .dark-mode .question {
+            border-bottom: 1px solid #555;
+        }
+        
+        /* Dark mode toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+        
+        .dark-mode-toggle:hover {
+            background-color: #2980b9;
+        }
+        
+        .dark-mode .dark-mode-toggle {
+            background-color: #f39c12;
+        }
+        
+        .dark-mode .dark-mode-toggle:hover {
+            background-color: #d68910;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .options label:hover {
+            background-color: #e9e9e9;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .result-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .result-score {
+            font-size: 36px;
+            text-align: center;
+            color: #3498db;
+            margin: 20px 0;
+        }
+        .result-feedback {
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .retry-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .retry-btn:hover {
+            background-color: #27ae60;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        /* Correct answers section */
+        .correct-answers {
+            background-color: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .dark-mode .correct-answers {
+            background-color: #1e3a1e;
+            border-color: #4caf50;
+        }
+        
+        .correct-answers h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        
+        .dark-mode .correct-answers h3 {
+            color: #81c784;
+        }
+        
+        .correct-answer-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #f1f8e9;
+            border-radius: 3px;
+        }
+        
+        .dark-mode .correct-answer-item {
+            background-color: #2d4a2d;
+        }
+        
+        .wrong-answer {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        
+        .correct-answer {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        
+        .dark-mode .wrong-answer {
+            color: #f44336;
+        }
+        
+        .dark-mode .correct-answer {
+            color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+    
+    <h1>Extended Security Self-Test</h1>
+    <h2>Where do you stand on privacy & online security?</h2>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+    
+    <div class="quiz-container" id="quiz">
+        <div class="question">
+            <p>1. Do you use a password manager to store your passwords?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q1" value="A"> A) Yes, I use a secure password manager
+                </label>
+                <label>
+                    <input type="radio" name="q1" value="B"> B) No, I save my passwords in my browser
+                </label>
+                <label>
+                    <input type="radio" name="q1" value="C"> C) I memorize all my passwords
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>2. Do you have two-factor authentication (2FA) enabled on all important accounts?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q2" value="A"> A) Yes, on all important accounts
+                </label>
+                <label>
+                    <input type="radio" name="q2" value="B"> B) Some accounts, but not all
+                </label>
+                <label>
+                    <input type="radio" name="q2" value="C"> C) No, I only use a password
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>3. How often do you change your passwords?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q3" value="A"> A) Every 3–6 months
+                </label>
+                <label>
+                    <input type="radio" name="q3" value="B"> B) Only when I suspect a security incident
+                </label>
+                <label>
+                    <input type="radio" name="q3" value="C"> C) I never change my passwords
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>4. Do your devices (phone, laptop, etc.) always run current operating systems and security updates?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q4" value="A"> A) Yes, always
+                </label>
+                <label>
+                    <input type="radio" name="q4" value="B"> B) I install updates when I remember
+                </label>
+                <label>
+                    <input type="radio" name="q4" value="C"> C) No, I often ignore updates
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>5. Do you use a VPN (Virtual Private Network) when using public WiFi?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q5" value="A"> A) Yes, always
+                </label>
+                <label>
+                    <input type="radio" name="q5" value="B"> B) Sometimes, when it seems necessary
+                </label>
+                <label>
+                    <input type="radio" name="q5" value="C"> C) No, never
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>6. How do you protect your personal data when browsing the internet?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q6" value="A"> A) I use privacy add-ons like uBlock Origin, Privacy Badger, etc.
+                </label>
+                <label>
+                    <input type="radio" name="q6" value="B"> B) I rely on the security of websites
+                </label>
+                <label>
+                    <input type="radio" name="q6" value="C"> C) I don't think about tracking
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>7. How do you handle phishing emails?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q7" value="A"> A) I always verify the source and don't click suspicious links
+                </label>
+                <label>
+                    <input type="radio" name="q7" value="B"> B) I sometimes open links if they appear trustworthy
+                </label>
+                <label>
+                    <input type="radio" name="q7" value="C"> C) I often click on links in emails I receive
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>8. Do you have encrypted email communication set up (e.g., PGP)?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q8" value="A"> A) Yes, I use encryption regularly
+                </label>
+                <label>
+                    <input type="radio" name="q8" value="B"> B) Only for important emails
+                </label>
+                <label>
+                    <input type="radio" name="q8" value="C"> C) No, I send unencrypted emails
+                </label>
+            </div>
+        </div>
+        
+        <!-- New Questions -->
+        <div class="question">
+            <p>9. What security measures do you use for your online accounts?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q9" value="A"> A) I use password managers, 2FA, and regularly check account activities
+                </label>
+                <label>
+                    <input type="radio" name="q9" value="B"> B) I use complex passwords but no additional security measures
+                </label>
+                <label>
+                    <input type="radio" name="q9" value="C"> C) I use simple passwords and don't use additional security features
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>10. How do you handle data backups?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q10" value="A"> A) I regularly create backups on different media (cloud and local storage)
+                </label>
+                <label>
+                    <input type="radio" name="q10" value="B"> B) I occasionally back up important data
+                </label>
+                <label>
+                    <input type="radio" name="q10" value="C"> C) I don't create backups of my data
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>11. How do you manage your privacy settings on social media?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q11" value="A"> A) I regularly review my privacy settings and restrict access to my data
+                </label>
+                <label>
+                    <input type="radio" name="q11" value="B"> B) I've adjusted basic settings but don't review them regularly
+                </label>
+                <label>
+                    <input type="radio" name="q11" value="C"> C) I use default settings and don't customize them
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>12. How do you verify the security of a website before entering personal data?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q12" value="A"> A) I check for HTTPS, verify the domain, and look for security certificates
+                </label>
+                <label>
+                    <input type="radio" name="q12" value="B"> B) I look for HTTPS but don't do further verification
+                </label>
+                <label>
+                    <input type="radio" name="q12" value="C"> C) I don't perform special security checks
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>13. How do you handle unknown USB sticks or storage media?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q13" value="A"> A) I don't use them or scan them thoroughly before accessing files
+                </label>
+                <label>
+                    <input type="radio" name="q13" value="B"> B) I sometimes check them for viruses before using them
+                </label>
+                <label>
+                    <input type="radio" name="q13" value="C"> C) I connect them to my computer without concerns
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>14. How do you secure your home WiFi router?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q14" value="A"> A) With a strong, unique password, regular firmware updates, and disabled WPS
+                </label>
+                <label>
+                    <input type="radio" name="q14" value="B"> B) With a password, but I rarely perform updates
+                </label>
+                <label>
+                    <input type="radio" name="q14" value="C"> C) I use default settings or a simple password
+                </label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <p>15. How do you protect your mobile devices (smartphone, tablet)?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q15" value="A"> A) With screen lock, encryption, remote wipe, and app permission control
+                </label>
+                <label>
+                    <input type="radio" name="q15" value="B"> B) With a simple PIN or pattern lock
+                </label>
+                <label>
+                    <input type="radio" name="q15" value="C"> C) I don't use screen lock or other security measures
+                </label>
+            </div>
+        </div>
+        
+        <button class="submit-btn" id="submit">Evaluate</button>
+    </div>
+    
+    <div class="results" id="results">
+        <div class="result-header">Your Result</div>
+        <div class="result-score" id="score">0/30 Points</div>
+        
+        <div class="result-feedback" id="feedback-high">
+            <strong>20–30 Points:</strong> You're very secure online! You've already taken many important measures to increase your online security. Keep it up and stay alert for future threats.
+        </div>
+        
+        <div class="result-feedback hidden" id="feedback-medium">
+            <strong>10–19 Points:</strong> You're on the right track, but there are areas you could improve. Consider better password management and regular security updates.
+        </div>
+        
+        <div class="result-feedback hidden" id="feedback-low">
+            <strong>0–9 Points:</strong> Your online security could be significantly improved. Consider enabling important security features like 2FA and password managers and regularly thinking about your data privacy.
+        </div>
+        
+        <div class="correct-answers" id="correctAnswers" style="display: none;">
+            <h3>📚 Learn from your answers:</h3>
+            <div id="correctAnswersList"></div>
+        </div>
+        
+        <button class="retry-btn" id="retry">Retake Test</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const quizContainer = document.getElementById('quiz');
+            const resultsContainer = document.getElementById('results');
+            const submitButton = document.getElementById('submit');
+            const retryButton = document.getElementById('retry');
+            const scoreElement = document.getElementById('score');
+            const feedbackHigh = document.getElementById('feedback-high');
+            const feedbackMedium = document.getElementById('feedback-medium');
+            const feedbackLow = document.getElementById('feedback-low');
+            const progressBar = document.getElementById('progress');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const correctAnswersSection = document.getElementById('correctAnswers');
+            const correctAnswersList = document.getElementById('correctAnswersList');
+            
+            // Dark mode functionality - using in-memory storage only
+            let isDarkMode = false;
+            
+            darkModeToggle.addEventListener('click', function() {
+                isDarkMode = !isDarkMode;
+                document.body.classList.toggle('dark-mode', isDarkMode);
+                darkModeToggle.textContent = isDarkMode ? '☀️' : '🌙';
+            });
+            
+            // Questions and correct answers
+            const questions = [
+                "Do you use a password manager to store your passwords?",
+                "Do you have two-factor authentication (2FA) enabled on all important accounts?",
+                "How often do you change your passwords?",
+                "Do your devices (phone, laptop, etc.) always run current operating systems and security updates?",
+                "Do you use a VPN (Virtual Private Network) when using public WiFi?",
+                "How do you protect your personal data when browsing the internet?",
+                "How do you handle phishing emails?",
+                "Do you have encrypted email communication set up (e.g., PGP)?",
+                "What security measures do you use for your online accounts?",
+                "How do you handle data backups?",
+                "How do you manage your privacy settings on social media?",
+                "How do you verify the security of a website before entering personal data?",
+                "How do you handle unknown USB sticks or storage media?",
+                "How do you secure your home WiFi router?",
+                "How do you protect your mobile devices (smartphone, tablet)?"
+            ];
+            
+            const correctAnswers = [
+                "Yes, I use a secure password manager",
+                "Yes, on all important accounts", 
+                "Every 3–6 months",
+                "Yes, always",
+                "Yes, always",
+                "I use privacy add-ons like uBlock Origin, Privacy Badger, etc.",
+                "I always verify the source and don't click suspicious links",
+                "Yes, I use encryption regularly",
+                "I use password managers, 2FA, and regularly check account activities",
+                "I regularly create backups on different media (cloud and local storage)",
+                "I regularly review my privacy settings and restrict access to my data",
+                "I check for HTTPS, verify the domain, and look for security certificates",
+                "I don't use them or scan them thoroughly before accessing files",
+                "With a strong, unique password, regular firmware updates, and disabled WPS",
+                "With screen lock, encryption, remote wipe, and app permission control"
+            ];
+            
+            // Point distribution:
+            // A = 2 points, B = 1 point, C = 0 points
+            const pointsMap = {
+                'A': 2,
+                'B': 1,
+                'C': 0
+            };
+            
+            const totalQuestions = 15;
+            
+            // Update progress indicator
+            function updateProgress() {
+                let answered = 0;
+                for (let i = 1; i <= totalQuestions; i++) {
+                    if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                        answered++;
+                    }
+                }
+                
+                const progressPercentage = (answered / totalQuestions) * 100;
+                progressBar.style.width = progressPercentage + '%';
+            }
+            
+            // Event listeners for radio buttons
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(button => {
+                button.addEventListener('change', updateProgress);
+            });
+            
+            submitButton.addEventListener('click', function() {
+                let score = 0;
+                let allAnswered = true;
+                let wrongAnswers = [];
+                
+                // Check all questions
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                    
+                    if (selectedOption) {
+                        const points = pointsMap[selectedOption.value];
+                        score += points;
+                        
+                        // Track wrong answers (anything less than 2 points)
+                        if (points < 2) {
+                            wrongAnswers.push({
+                                questionNumber: i,
+                                question: questions[i-1],
+                                userAnswer: selectedOption.parentElement.textContent.trim(),
+                                correctAnswer: correctAnswers[i-1]
+                            });
+                        }
+                    } else {
+                        allAnswered = false;
+                        alert(`Please answer question ${i}`);
+                        break;
+                    }
+                }
+                
+                if (allAnswered) {
+                    // Show result
+                    scoreElement.textContent = `${score}/${totalQuestions * 2} Points`;
+                    
+                    // Show appropriate feedback
+                    feedbackHigh.classList.add('hidden');
+                    feedbackMedium.classList.add('hidden');
+                    feedbackLow.classList.add('hidden');
+                    
+                    if (score >= 20) {
+                        feedbackHigh.classList.remove('hidden');
+                    } else if (score >= 10) {
+                        feedbackMedium.classList.remove('hidden');
+                    } else {
+                        feedbackLow.classList.remove('hidden');
+                    }
+                    
+                    // Show correct answers for wrong responses
+                    if (wrongAnswers.length > 0) {
+                        correctAnswersSection.style.display = 'block';
+                        correctAnswersList.innerHTML = '';
+                        
+                        wrongAnswers.forEach(item => {
+                            const answerDiv = document.createElement('div');
+                            answerDiv.className = 'correct-answer-item';
+                            answerDiv.innerHTML = `
+                                <strong>Question ${item.questionNumber}:</strong> ${item.question}<br>
+                                <span class="wrong-answer">Your answer:</span> ${item.userAnswer.replace(/^[ABC]\)\s*/, '')}<br>
+                                <span class="correct-answer">Best practice:</span> ${item.correctAnswer}
+                            `;
+                            correctAnswersList.appendChild(answerDiv);
+                        });
+                    } else {
+                        correctAnswersSection.style.display = 'none';
+                    }
+                    
+                    // Hide quiz, show results
+                    quizContainer.style.display = 'none';
+                    resultsContainer.style.display = 'block';
+                }
+            });
+            
+            retryButton.addEventListener('click', function() {
+                // Reset all answers
+                const radioButtons = document.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(button => {
+                    button.checked = false;
+                });
+                
+                // Reset progress indicator
+                progressBar.style.width = '0%';
+                
+                // Hide results, show quiz
+                resultsContainer.style.display = 'none';
+                quizContainer.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
