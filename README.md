@@ -43,24 +43,7 @@ Each question offers multiple choice answers with different point values:
 
 ## 🚀 Getting Started
 
-### Option 1: Direct Use
 Simply open the `index.html` file in any modern web browser. No installation or setup required!
-
-### Option 2: Web Server
-For a more robust experience, serve the file through a local web server:
-
-```bash
-# Using Python 3
-python -m http.server 8000
-
-# Using Node.js (with http-server package)
-npx http-server
-
-# Using PHP
-php -S localhost:8000
-```
-
-Then navigate to `http://localhost:8000` in your browser.
 
 ## 💻 Technical Requirements
 
